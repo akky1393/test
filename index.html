@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<link rel="stylesheet" href="n4.css">
+<title></title>
+<style type="text/css">
+<!--
+.button{
+  width : 40px;
+  height : 20px;
+  font-size : 12px;
+  background-position : center center;
+}
+.view{
+  width : 180px;
+  height : 256px;
+  text-align : center;
+  font-size : 12px;
+  color : white;
+  background-color : black;
+}
+.answer{
+  font-size : 24px;
+  font-weight : bold;
+  color : blue;
+  letter-spacing : 5px;
+  text-align : center;
+}
+.card{
+  color : black;
+  background-color : aqua;
+  margin-top : 3px;
+  margin-left : 3px;
+  margin-right : 3px;
+  margin-bottom : 3px;
+  font-size : 20px;
+  font-weight : bold;
+  padding-top : 5px;
+  padding-left : 5px;
+  padding-right : 5px;
+  padding-bottom : 5px;
+  height : 20px;
+}
+.recoed{
+  background-color : blue;
+  width : 90%;
+  height : 80%;
+  overflow : auto;
+  color : aqua;
+}
+
+TABLE{
+  font-size : 12px;
+}
+-->
+</style>
+</head>
+<body>
+<p>スタート画面</p>
+<table class="view" id="title">
+  <tbody>
+    <tr>
+      <td>一人で遊ぶ<br>
+      <br>
+      3桁<br>
+      4桁<br>
+      5桁<br>
+      <br>
+      <br>
+      CPUと対戦<br>
+      <br>
+      3桁<br>
+      4桁<br>
+      5桁</td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<p>一人で遊ぶ</p>
+<table class="view" id="single" border="1" cellspacing="0">
+  <tbody>
+    <tr>
+      <td valign="bottom" style="height : 20%;"><span class="card">1</span><span class="card">2</span><span class="card">3</span><span class="card">4</span><span class="card">5</span></td>
+    </tr>
+    <tr>
+      <td align="center" style="height : 40%;"><input class="button" onclick="AddNo(this.value)" value="0" type="button"><input class="button" onclick="AddNo(this.value)" value="1" type="button"><input class="button" onclick="AddNo(this.value)" value="2" type="button"><br>
+      <input class="button" onclick="AddNo(this.value)" value="3" type="button"><input class="button" onclick="AddNo(this.value)" value="4" type="button"><input class="button" onclick="AddNo(this.value)" value="5" type="button"><br>
+      <input class="button" onclick="AddNo(this.value)" value="6" type="button"><input class="button" onclick="AddNo(this.value)" value="7" type="button"><input class="button" onclick="AddNo(this.value)" value="8" type="button"><br>
+      <input class="button" onclick="Candidates()" value="攻撃" type="button"><input class="button" onclick="AddNo(this.value)" value="9" type="button"><input class="button" onclick='document.frm.call.value=""; CandidatesClear();' value="削除" type="button"></td>
+    </tr>
+    <tr>
+      <td align="center" style="height : 40%;"><div class="recoed">
+      <table width="90%" cellspacing="0">
+        <tbody>
+          <tr>
+            <td width="20%" align="center">1</td>
+            <td width="40%" align="center">12334</td>
+            <td width="40%" align="center">1-4</td>
+          </tr>
+          <tr>
+            <td align="center">2</td>
+            <td align="center">12334</td>
+            <td align="center">1-3</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>x</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>x</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>x</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>x</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>x</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table></div>
+     </td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<p>CPUと対戦</p>
+<p>人で遊ぶ</p>
+<div style="background-color : black;width : 180px;height : 256px;color : white;text-align : center;">
+<div style="height : 15%;">カード</div>
+<div style="height : 55%;"><input class="button" onclick="AddNo(this.value)" value="0" type="button"><input class="button" onclick="AddNo(this.value)" value="1" type="button"><input class="button" onclick="AddNo(this.value)" value="2" type="button"><br>
+<input class="button" onclick="AddNo(this.value)" value="3" type="button"><input class="button" onclick="AddNo(this.value)" value="4" type="button"><input class="button" onclick="AddNo(this.value)" value="5" type="button"><br>
+<input class="button" onclick="AddNo(this.value)" value="6" type="button"><input class="button" onclick="AddNo(this.value)" value="7" type="button"><input class="button" onclick="AddNo(this.value)" value="8" type="button"><br>
+<input class="button" onclick="Candidates()" value="攻撃" type="button"><input class="button" onclick="AddNo(this.value)" value="9" type="button"><input class="button" onclick='document.frm.call.value=""; CandidatesClear();' value="削除" type="button"></div>
+<div style="height : 30%;">
+<div style="background-color : aqua;width : 80%;height : 90%;overflow : auto;font-size : 12px">
+<div style="float : left;height : 20%;background-color : blue;width : 20%;">1</div>
+<div style="float : left;height : 20%;background-color : blue;width : 40%;">123</div>
+<div style="height : 20%;background-color : blue;">1-1</div>
+<div style="float : left;height : 20%;background-color : blue;width : 20%;">5</div>
+<div style="float : left;height : 20%;background-color : blue;width : 40%;">1234</div>
+<div style="height : 20%;background-color : blue;">1-1</div>
+<div style="float : left;height : 20%;background-color : blue;width : 20%;">10</div>
+<div style="float : left;height : 20%;background-color : blue;width : 40%;">12345</div>
+<div style="height : 20%;background-color : blue;">1-1</div>
+<div style="float : left;height : 20%;background-color : blue;width : 20%;">100</div>
+<div style="float : left;height : 20%;background-color : blue;width : 40%;">12345</div>
+<div style="height : 20%;background-color : blue;">1-1</div>
+<div style="float : left;height : 20%;background-color : blue;width : 20%;">1000</div>
+<div style="float : left;height : 20%;background-color : blue;width : 40%;">12345</div>
+<div style="height : 20%;background-color : blue;">1-1</div>
+<div style="float : left;height : 20%;background-color : blue;width : 20%;">10000</div>
+<div style="float : left;height : 20%;background-color : blue;width : 40%;">12345</div>
+<div style="height : 20%;background-color : blue;">1-1</div>
+<div style="float : left;height : 20%;background-color : blue;width : 20%;">123456</div>
+<div style="float : left;height : 20%;background-color : blue;width : 40%;">12345</div>
+<div style="height : 20%;background-color : blue;">1-1</div>
+</div>
+</div>
+</div>
+</body>
+</html>

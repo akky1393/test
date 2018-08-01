@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<title>divのvertical-alignテスト</title>
+
+<style type="text/css">
+<!--
+
+.table{
+ width:100%;
+ display:table;
+}
+
+.table_cell_1,
+.table_cell_2,
+.table_cell_3{
+ display:table-cell;
+ height:100px;
+}
+
+.table_cell_1{
+	background-color:red;
+vertical-align:top;
+}
+
+.table_cell_2{
+	background-color:green;
+vertical-align:middle;
+}
+
+.table_cell_3{
+	background-color:blue;
+vertical-align:bottom;
+}
+
+-->
+</style>
+</head>
+<body>
+<div class="table">
+<div class="table_cell_1">
+table_cell_1
+</div>
+<div class="table_cell_2">
+table_cell_2
+</div>
+<div class="table_cell_3">
+table_cell_3
+</div>
+</div>
+<table border="1">
+  <tbody>
+    <tr>
+      <td>&nbsp;q</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<table border="1">
+  <thead>
+    <tr>
+      <th>w</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody style="width : 300px;height : 100px;">
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;4</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;5</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

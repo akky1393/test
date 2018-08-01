@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+
+<title>一人で遊ぶ</title>
+<style type="text/css">
+<!--
+BODY {
+  width : 20em;
+  /* 16以上 */
+  height : 32em;
+  /* 幅はある程度サイズ変更できるけど高さは変更不可 */
+}
+.main{
+  width : 100%;
+  /* 16以上 */
+  height : 100%;
+  /* 幅はある程度サイズ変更できるけど高さは変更不可 */
+  color : white;
+  background-color : black;
+  position : relative;
+}
+.card {
+  display : -moz-inline-box;
+  display : inline-block;
+  /display : inline;
+  width:100%;
+  text-align: center;
+  background-color : gray;
+  margin: 0px;
+  padding: 0px;
+  font-size : 3em;
+}
+.card LI{
+  display: -moz-inline-box;
+  display: inline-block;
+  /display: inline;
+  /zoom: 1;
+  background-color : teal;
+  width : 1em;
+  height : 1.2em;
+  color : fuchsia;
+  margin : 0.05em 0.1em;
+  border-style : solid;
+  border-color: blue;
+  border-width : 0.02em;
+  border-radius : 0.1em;
+}
+.button TD{
+  background-color : silver;
+  text-align : center;
+  border-style : outset;
+  color : black;
+  width : 33%;
+  border-color : gray;
+  border-radius : 0.5em;
+  font-weight : bold;
+}
+.record_header{
+  background-color : aqua;
+  width : 80%;
+  height : 1em;
+}
+.record_header div{
+  height : 1em;
+  float : left;
+  font-weight : bold;
+  color : blue;
+}
+.record{
+  background-color : blue;
+  width : 80%;
+  height : 5em;
+  overflow : auto;
+}
+.record div{
+  height : 1em;
+  float : left;
+}
+#message{
+  width : 100%;
+  height : 100%;
+  top : 0px;
+  left : 0px;
+  position : absolute;
+  background: rgba(0,0,0,0);
+}
+#message div{
+  width : 100%;
+  top : 10em;
+  height : 10em;
+  background-color : aqua;
+  border-style : double none;
+  border-width : 0.5em;
+  border-color : blue;
+  position : relative;
+}
+#message P{
+  text-align : center;
+  width : 100%;
+  top : 50%;
+  left : 0px;
+  margin-top : -0.5em;
+  position : absolute;
+  font-size : 3em;
+  color : yellow;
+}
+#message ul{
+  width : 100%;
+  text-align : center;
+  margin : 0px;
+  padding : 0px;
+  top : 7em;
+  position : relative;
+}
+#message li{
+  display : -moz-inline-box;
+  display : inline-block;
+  /display : inline;
+  /zoom : 1;
+  width : 5em;
+  height : 1em;
+  color : black;
+  margin : 0.5em;
+  padding : 0.3em;
+  background-color : silver;
+  border-color : gray;
+  border-style : outset;
+  border-radius : 0.5em;
+}
+#target{
+  font-size : 0.5em;
+  color : yellow;
+  background-color : silver;
+}
+-->
+</style>
+
+<script language="JavaScript">
+<!--
+var _place;						/* 桁数 */
+var _turn;						/* 現在のターン */
+var _message_timer;				/* メッセージタイマーID */
+var _lapse_timer;				/* 経過時間タイマーID */
+var _cpu_no = new Array();		/* CPU選択ナンバー */
+var _call_no = new Array();		/* コールナンバー */
+
+// 初期化（一人で遊ぶ）
+function InitOnePlay(place)
+{
+	var i;
+	_place = place;
+	_turn = 1;
+	_cpu_no.length = 0;
+	_call_no.length = 0;
+	while (_cpu_no.length < place)
+	{
+		i = Math.floor( Math.random() * 10);
+		if (_cpu_no.toString().indexOf(i, 0) == -1)
+			_cpu_no.push(i);
+	}
+
+	var card = document.getElementById("one_card").getElementsByTagName("li");
+	for (i = 0; i < 5; ++i)
+	{
+		card[i].innerHTML = "&nbsp;";
+		card[i].style.display = i < place ? "" : "none";
+	}
+	document.getElementById("one_record").innerHTML = "";
+
+	if (_lapse_timer)
+		clearInterval(_lapse_timer);
+	_lapse_timer = setInterval(CountUpTimerOnePlay, 1000);
+	var time = document.getElementById("one_time");
+	time.timeCount = 0;
+	time.innerHTML = "Time 0:00";
+
+//	alert(_cpu_no.join());
+}
+
+// カード選択処理（一人で遊ぶ）
+function PushCardOnePlay(num)
+{
+	var len = _call_no.length;
+	if (len == _place)
+		return;
+	if (_call_no.toString().indexOf(num, 0) != -1)
+		return;
+	document.getElementById("one_card").getElementsByTagName("li")[len].innerHTML = num;
+	_call_no.push(num);
+}
+
+// カード選択取り消し処理（一人で遊ぶ）
+function PopCardOnePlay()
+{
+	var len = _call_no.length;
+	if (len == 0)
+		return;
+	_call_no.pop();
+	document.getElementById("one_card").getElementsByTagName("li")[len-1].innerHTML = "&nbsp;";
+}
+
+// ナンバーコール処理（一人で遊ぶ）
+function CallOnePlay()
+{
+	var len = _call_no.length;
+	if (len != _place)
+		return;
+
+	var result = CheckNumber(_cpu_no, _call_no);
+
+	var record = document.getElementById("one_record")
+
+	var element = document.createElement('div');
+	element.style.width = "20%";
+	element.appendChild(document.createTextNode(_turn));
+	record.appendChild(element);
+
+	element = document.createElement('div');
+	element.style.width = "40%";
+	element.appendChild(document.createTextNode(_call_no.join("")));
+	record.appendChild(element);
+
+	element = document.createElement('div');
+	element.style.cssFloat = "none";
+	element.style.styleFloat = "none"; // 古いIE対応
+	element.appendChild(document.createTextNode(result));
+	record.appendChild(element);
+
+	record.scrollTop = record.scrollHeight;
+	++_turn;
+
+	if (result == _place + "-0")
+	{
+		clearInterval(_lapse_timer);
+		_lapse_timer = undefined;
+		ConfirmMessage("Numer0n!", "Retry", function() { InitOnePlay(_place); }, "Exit", function() { alert("終了"); });
+	}
+	else
+		ShowMesseage(result, ClearCardOnePlay);
+
+}
+
+//ターゲット使用（一人で遊ぶ）
+function UseTargetOnePlay()
+{
+	var select = "<select id=\"target\"><option>Target number</option>";
+	for (var i = 0; i <10; ++i)
+		select += "<option>" + i + "</option>";
+	select += "</select>";
+	ConfirmMessage(select, "OK", function() { 
+		var num = document.getElementById("target").selectedIndex - 1;
+		if (num == -1) return;
+		var hit = '<ul class="card" style="font-size:0.8em">';
+		for (var i = 0; i < _place; ++i)
+		{
+			hit += "<li>";
+			if (_cpu_no[i] == num) hit += num;
+			else hit += "&nbsp";
+			hit += "</li>";
+		}
+		hit += "</ul>";
+		ShowMesseage(hit, null, 0);
+	}, "Cancel", null);
+}
+
+// カードをリセット（一人で遊ぶ）
+function ClearCardOnePlay()
+{
+	var card = document.getElementById("one_card").getElementsByTagName("li");
+	for (var i = 0; i < _place; ++i)
+		card[i].innerHTML = "&nbsp;";
+	_call_no.length = 0;
+}
+
+// 経過時間更新（一人で遊ぶ）
+function CountUpTimerOnePlay()
+{
+	var time = document.getElementById("one_time");
+	++time.timeCount;
+	var min = Math.floor(time.timeCount / 60);
+	var sec = time.timeCount % 60;
+	if (sec <= 9)
+		sec = "0" + sec;
+	time.innerHTML = "Time " + min + ":" + sec;
+}
+
+
+// ナンバーを比較しEAT数とBITE数を返す
+function CheckNumber(num1, num2)
+{
+	var eat = 0;
+	var bite = 0;
+	var comp = new Array(10);
+	var i;
+	for (i = 0; i < num1.length; ++i)
+		comp[num1[i]] = i;
+	for (i = 0; i < num2.length; ++i)
+	{
+		if (comp[num2[i]] != null)
+		{
+			if (comp[num2[i]] == i)
+				++eat;
+			else
+				++bite;
+		}
+	}
+	return eat + "-" + bite;
+}
+
+// メッセージ表示画面の作成
+// message		表示するメッセージ
+// time			表示時間(秒)。0だとクリックするまで無期限。
+// afterFunc	表示時間経過後、呼び出し関数。
+function ShowMesseage(message, afterFunc, time)
+{
+	if (time == undefined) time = 1;
+	var element = document.createElement('div');
+	element.id = "message";
+	element.onclick = function() { CloseMessage(afterFunc); };
+	element.innerHTML = "<div><p>" + message + "</p></div>";
+	document.getElementById("main").appendChild(element);
+	if (time)
+		_message_timer = window.setTimeout(function() { CloseMessage(afterFunc);}, time * 1000);
+	else
+		_message_timer = undefined;
+}
+
+// 二択メッセージの表示
+// message	表示するメッセージ
+// confirm1	選択肢1のテキスト
+// func1	選択肢1選択時の処理
+// confirm2	選択肢2のテキスト
+// func2	選択肢2選択時の処理
+function ConfirmMessage(message, confirm1, func1, confirm2, func2)
+{
+	var element = document.createElement('div');
+	element.id = "message";
+	var newDiv = document.createElement('div');
+	newDiv.innerHTML = "<p style=\"top:40%\">" + message + "</p>";
+	var newUl = document.createElement('ul');
+	var newLi = document.createElement('li');
+	newLi.onclick = function() { CloseMessage(func1); };
+	newLi.innerHTML = confirm1;
+	newUl.appendChild(newLi);
+	newLi = document.createElement('li');
+	newLi.onclick = function() { CloseMessage(func2); };
+	newLi.innerHTML = confirm2;
+	newUl.appendChild(newLi);
+	newDiv.appendChild(newUl);
+	element.appendChild(newDiv);
+	document.getElementById("main").appendChild(element);
+}
+
+function CloseMessage(afterFunc)
+{
+	if (_message_timer)
+	{
+		clearTimeout(_message_timer);
+		_message_timer = undefined;
+	}
+	var element = document.getElementById("message");
+	if (!element)
+		return;
+	if (afterFunc) afterFunc();
+	document.getElementById("main").removeChild(element);
+}
+
+//-->
+</script></HEAD>
+<body onload="InitOnePlay(5);">
+<div class="main" id="main" align="center">
+
+<div id="one_play" width : 100%;">
+<div style="height : 3em;position : relative;"><span id="one_time" style="top : 1em;position : relative;left : 1em;float : left;">Time　0:00</span><span style="position : relative;top : 0.6em;float : right;left : -1em;color : black;background-color : silver;border-style : outset;border-color : gray;border-radius : 0.3em ;padding : 0.2em 1em;" onclick="alert('終了')">GiveUp</span></div>
+<div style="height : 5em;">
+<ul class="card" id="one_card"><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li></ul>
+</div>
+
+<div style="height : 16em;">
+<table width="80%" cellspacing="0" height="90%" class="button">
+  <tbody>
+    <tr>
+      <td onclick="PushCardOnePlay(0)">0</td>
+      <td onclick="PushCardOnePlay(1)">1</td>
+      <td onclick="PushCardOnePlay(2)">2</td>
+    </tr>
+    <tr>
+      <td onclick="PushCardOnePlay(3)">3</td>
+      <td onclick="PushCardOnePlay(4)">4</td>
+      <td onclick="PushCardOnePlay(5)">5</td>
+    </tr>
+    <tr>
+      <td onclick="PushCardOnePlay(6)">6</td>
+      <td onclick="PushCardOnePlay(7)">7</td>
+      <td onclick="PushCardOnePlay(8)">8</td>
+    </tr>
+    <tr>
+      <td style="color : red;" onclick="CallOnePlay()">CALL</td>
+      <td onclick="PushCardOnePlay(9)">9</td>
+      <td style="color : blue;" onclick="PopCardOnePlay()">RESET</td>
+    </tr>
+    <tr>
+      <td colspan="3" style="height : 1em;background-color : black;border-style : none;"></td>
+    </tr>
+    <tr>
+      <td onclick="UseTargetOnePlay()">TRAGET</td>
+      <td onclick="void(0)">HI&LOW</td>
+      <td onclick="void(0)">SLASH</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div>
+  <div class="record_header"><div style="width : 20%;">TURN</div><div style="width : 40%;">NUMBER</div><div style="float : none;">RESULT</div></div>
+  <div class="record" id="one_record"><!--<div style="width : 20%;">1</div><div style="width : 40%;">123</div><div style="float : none;">1-1</div>--></div>
+</div>
+</div>
+<!--<div id="message"><div><p>1-2</p></div></div>-->
+<!--<div id="message"><div><p style="top:40%">Numer0n!</p><ul><li>test</li><li>test2</li></ul></div></div>-->
+
+</div>
+</body></HTML>

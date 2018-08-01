@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=320" name="viewport" />
+<link rel="stylesheet" type="text/css" charset="utf-8" href="base.css">
+<title>メイン画面</title>
+<script type="text/javascript" LANGUAGE="JavaScript">
+<!--
+var __tap;
+//document.addEventListener("touchstart", function(e) { e.preventDefault(); __tap = e.target; }, false);
+//document.addEventListener("touchend", function(e) { e.preventDefault(); if (__tap == e.target) { OnClickProc(e); } __tap = null;}, false);
+document.addEventListener("click", OnClickProc, false);
+function OnClickProc(e)
+{
+	var param = e.target.id.split("_");
+	switch (param[0])
+	{
+	case "Single":
+		alert(param[1]);
+		break;
+	default:
+		break;
+	}
+}
+
+function LoadPage(page)
+{
+//	if 
+}
+
+//-->
+</script>
+</head>
+<body>
+<div class="main" align="center">
+  <div style="background-color : navy;" class="menuTitle">
+    <h1>Single Play</h1>
+    <ul>
+      <li class="button" id="Single_3">3 numbers</li>
+      <li class="button" id="Single_4">4 numbers</li>
+      <li class="button" id="Single_5">5 numbers</li>
+    </ul>
+  </div>
+  <div style="background-color : green;" class="menuTitle">
+    <h1>Battle Play</h1>
+    <ul>
+      <li class="button" id="Battle_3">3 numbers</li>
+      <li class="button" id="Battle_3">4 numbers</li>
+      <li class="button" id="Battle_3">5 numbers</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

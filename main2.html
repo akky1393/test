@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>メイン画面</title>
+<style>
+body {
+  width : 20em;
+  /* 16以上 */
+  height : 32em;
+  /* 幅はある程度サイズ変更できるけど高さは変更不可 */
+}
+.main{
+  width : 100%;
+  /* 16以上 */
+  height : 100%;
+  /* 幅はある程度サイズ変更できるけど高さは変更不可 */
+  color : white;
+  background-color : black;
+}
+.button{
+  background-color : silver;
+  text-align : center;
+  color : black;
+  border-color : rgb(238, 238, 238) gray gray rgb(238, 238, 238);
+  border-radius : 0.5em;
+  font-weight : bold;
+  border-style : solid;
+  cursor : pointer;
+}
+
+
+
+/* ########################################################
+
+ メインページ
+
+######################################################## */
+
+.menuTitle{
+  top : 0;
+  height : 50%;
+  position : relative;
+}
+.menuTitle h1{
+  top : 10%;
+  margin : 0;
+  position : relative;
+}
+.menuTitle ul{
+  top : 20%;
+  position : relative;
+  margin : 0;
+  padding : 0;
+}
+.menuTitle li{
+  margin : 0.5em;
+  padding : 0.3em;
+  text-align : center;
+  width : 50%;
+  list-style-type : none;
+}
+
+
+</style>
+<script type="text/javascript" LANGUAGE="JavaScript">
+<!--
+var __tap;
+document.addEventListener("touchstart", function(e) { e.preventDefault(); __tap = e.target; }, false);
+document.addEventListener("touchend", function(e) { e.preventDefault(); if (__tap == e.target) { OnClickProc(e); } __tap = null;}, false);
+document.addEventListener("click", OnClickProc, false);
+function OnClickProc(e)
+{
+	var param = e.target.id.split("_");
+	switch (param[0])
+	{
+	case "Single":
+		alert(param[1]);
+		break;
+	default:
+		break;
+	}
+}
+
+function LoadPage(page)
+{
+//	if 
+}
+
+//-->
+</script>
+</head>
+<body>
+<div class="main" align="center">
+  <div style="background-color : navy;" class="menuTitle">
+    <h1>Single Play</h1>
+    <ul>
+      <li class="button" id="Single_3">3 numbers</li>
+      <li class="button" id="Single_4">4 numbers</li>
+      <li class="button" id="Single_5">5 numbers</li>
+    </ul>
+  </div>
+  <div style="background-color : green;" class="menuTitle">
+    <h1>Battle Play</h1>
+    <ul>
+      <li class="button" id="Battle_3">3 numbers</li>
+      <li class="button" id="Battle_3">4 numbers</li>
+      <li class="button" id="Battle_3">5 numbers</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,186 @@
+﻿@charset "UTF-8";
+
+/* ########################################################
+
+ 共通
+
+######################################################## */
+
+body{
+  width : 320px;
+  height : 480px;
+  font-size : 15px;
+  margin : 0px;
+}
+
+.main{
+  width : 100%;
+  height : 100%;
+  color : white;
+  background-color : black;
+  position : relative;
+}
+.button{
+  background-color : silver;
+  text-align : center;
+  color : black;
+  border-color : rgb(238, 238, 238) gray gray rgb(238, 238, 238);
+  border-radius : 8px;
+  font-weight : bold;
+  border-style : solid;
+  cursor : pointer;
+}
+
+
+
+/* ########################################################
+
+ メインページ
+
+######################################################## */
+
+.menuTitle{
+  top : 0;
+  height : 50%;
+  position : relative;
+}
+.menuTitle h1{
+  top : 10%;
+  margin : 0;
+  position : relative;
+}
+.menuTitle ul{
+  top : 20%;
+  position : relative;
+  margin : 0;
+  padding : 0;
+}
+.menuTitle li{
+  margin : 8px;
+  padding : 5px;
+  text-align : center;
+  width : 50%;
+  list-style-type : none;
+}
+
+
+
+
+/* ########################################################
+
+ Single Play
+
+######################################################## */
+
+.record_header{
+  background-color : aqua;
+  width : 80%;
+  height : 17px;
+}
+.record_header div{
+  height : 17px;
+  float : left;
+  font-weight : bold;
+  color : blue;
+}
+.record{
+  background-color : blue;
+  width : 80%;
+  height : 88px;
+  overflow : auto;
+}
+.record div{
+  height : 17px;
+  float : left;
+}
+.card{
+  display : inline-block;
+  width : 1em;
+  height : 1.25em; 
+  font-size : 0.8em;
+  border-color : teal;
+  border-width : 0.05em;
+  border-radius : 0.1em;
+  border-style : solid;
+  margin : 0px 1px;
+  color : black;
+  background-color : white;
+  vertical-align : top;
+}
+
+#message{
+  width : 100%;
+  height : 100%;
+  top : 0px;
+  left : 0px;
+  position : absolute;
+  background: rgba(0,0,0,0);
+}
+#message div{
+  width : 100%;
+  top : 150px;
+  height : 150px;
+  background-color : aqua;
+  border-style : double none;
+  border-width : 8px;
+  border-color : blue;
+  position : relative;
+}
+#message p{
+  width : 100%;
+  top : 50%;
+  margin-top : -0.5em;
+  position : absolute;
+  font-size : 45px;
+  color : yellow;
+}
+#message h1{
+  width : 100%;
+  top : 30%;
+  position : absolute;
+  font-size : 45px;
+  margin : 0px;
+}
+#message h2{
+  width : 100%;
+  top : 60%;
+  position : absolute;
+  font-size : 28px;
+  margin : 0px;
+}
+#message ul{
+  width : 100%;
+  text-align : center;
+  margin : -50px 0 0 0;
+  padding : 0px;
+  top : 100%;
+  left : 0px;
+  position : absolute;
+}
+#message li{
+  display : -moz-inline-box;
+  display : inline-block;
+  /display : inline;
+  /zoom : 1;
+  width : 75px;
+  height : 15px;
+  margin : 8px;
+  padding : 5px;
+}
+#target{
+  font-size : 20px;
+  color : yellow;
+  background-color : silver;
+}
+td.button{
+  width : 33%;
+  border-width : medium;
+}
+#single_card{
+  background-color : gray;
+  height : 67px;
+  width : 100%;
+  margin : 0px;
+  padding-top : 3px;
+  font-size : 60px;
+}

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>一人で遊ぶ</title>
+<meta name="viewport" content="width=device-width;user-scalable=no">
+<link rel="stylesheet" href="base.css" type="text/css">
+<script>
+<!--
+
+var __tap;
+//document.addEventListener("touchstart", function(e) {/* e.preventDefault();*/ __tap = e.target; }, false);
+//document.addEventListener("touchend", function(e) { /*e.preventDefault();*/ if (__tap == e.target) { OnClickProc(e); } __tap = null;}, false);
+//window.addEventListener("click", OnClickProc, false);
+window.addEventListener("load", OnInitSize, false);
+window.addEventListener("resize", OnInitSize, false);
+window.addEventListener("orientationchange", OnInitSize, false);
+document.addEventListener("mousedown", function(e) { __tap = e.target; }, false);
+document.addEventListener("mouseup", function(e) { if (__tap == e.target) OnClickProc(e.target); }, false);
+
+function OnClickProc(target)
+{
+	var param = target.id.split("_");
+	switch (param[0])
+	{
+	case "num":
+		InputSinglePlay(param[1]);
+		break;
+	case "select":
+		if (param[1] == "ok"){}
+		else if (param[1] == "reset") ResetSelectCard();
+		else if (param[1] == "cancel") CloseMessage();
+		else PushSelectCard(param[1], target);
+		break;
+	default:
+		break;
+	}
+}
+
+function ResetSelectCard()
+{
+
+}
+
+function OnInitSize()
+{
+	var raito, top, left;
+	if (window.innerHeight / window.innerWidth > 480 / 320)
+	{
+		raito =  window.innerWidth / 320;
+		top = (window.innerHeight / raito - 480) / 2;
+		left = 0;
+	}
+	else
+	{
+		raito = window.innerHeight / 480;
+		top = 0;
+		left = (window.innerWidth / raito - 320) / 2;
+	}
+	document.body.style.zoom = raito;
+	var main = document.getElementById("main");
+	main.style.left = left + "px";
+	main.style.top = top + "px";
+}
+
+var _place;						/* 桁数 */
+var _turn;						/* 現在のターン */
+var _message_timer;				/* メッセージタイマーID */
+var _lapse_timer;				/* 経過時間タイマーID */
+var _cpu_no = new Array();		/* CPU選択ナンバー */
+var _call_no = new Array();		/* コールナンバー */
+var _select_card = new Array();	/* 選択されたカード */
+
+// 初期化（一人で遊ぶ）
+function InitSinglePlay(place)
+{
+	var i;
+	_place = place;
+	_turn = 1;
+	_cpu_no.length = 0;
+	_call_no.length = 0;
+	while (_cpu_no.length < place)
+	{
+		i = Math.floor( Math.random() * 10);
+		if (_cpu_no.toString().indexOf(i, 0) == -1)
+			_cpu_no.push(i);
+	}
+
+	var card = document.getElementById("single_card");
+	var element = document.createElement('span');
+	element.className = "card";
+	element.appendChild(document.createTextNode("\u00a0"));
+	card.innerHTML = "";
+	for (i = 0; i < _place; ++i)
+		card.appendChild(element.cloneNode(true));
+	
+	document.getElementById("single_record").innerHTML = "";
+
+	if (_lapse_timer)
+		clearInterval(_lapse_timer);
+	_lapse_timer = setInterval(CountUpTimerSinglePlay, 1000);
+	var time = document.getElementById("single_time");
+	time.timeCount = 0;
+	time.innerHTML = "Time 0:00";
+
+//	alert(_cpu_no.join());
+}
+
+// ボタン入力処理（一人で遊ぶ）
+function InputSinglePlay(num)
+{
+	var len = _call_no.length;
+	var cards = document.getElementById("single_card").getElementsByTagName("span");
+	if (num == "call" && len == _place) CallSinglePlay();
+	else if (num == "target") UseTargetSinglePlay();
+	else if (num == "hilow") UseHiAndLowSinglePlay();
+	else if (num == "slash") UseSlashSinglePlay();
+	else if (num == "reset" && len != 0)
+	{
+		cards[len-1].innerHTML = "&nbsp;";
+		_call_no.pop();
+	}
+	else if (num >= 0 && num <= 9 && len != _place && _call_no.toString().indexOf(num, 0) == -1)
+	{
+		cards[len].innerHTML = num;
+		_call_no.push(num);
+	}
+}
+
+// ナンバーコール（一人で遊ぶ）
+function CallSinglePlay()
+{
+	var result = CheckNumber(_cpu_no, _call_no);
+	AddLogSinglePlay(_call_no.join(""), result);
+
+	if (result == _place + "-0")
+	{
+		clearInterval(_lapse_timer);
+		_lapse_timer = undefined;
+		ConfirmMessage("Numer0n!", "Retry", function() { InitSinglePlay(_place); }, "Exit", function() { alert("終了"); });
+	}
+	else
+		ShowMesseage(result, ClearCardSinglePlay);
+}
+
+// ターゲット使用（一人で遊ぶ）
+function UseTargetSinglePlay()
+{
+/*
+	var select = "<select id=\"target\"><option>Target number</option>";
+	for (var i = 0; i <10; ++i)
+		select += "<option>" + i + "</option>";
+	select += "</select>";
+	ConfirmMessage(select, "OK", function() { 
+		var num = document.getElementById("target").selectedIndex - 1;
+		if (num == -1) return;
+		var result = "";
+		var flag = true;
+		for (var i = 0; i < _place; ++i)
+		{
+			result += '<span class="card">';
+			if (_cpu_no[i] == num)
+			{
+				result += num;
+				flag = false;
+			}
+			else
+				result += "&nbsp";
+			result += "</span>";
+		}
+		AddLogSinglePlay("TARGET " + num, result);
+		if (flag) result += '</p><p>NOT FOUND';
+		ShowMesseage(result);
+	}, "Cancel", null);
+*/
+	CardSelectMessage("Target", new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), 1);
+    // todo:選択処理後の実装
+}
+
+// HI&LOW使用（一人で遊ぶ）
+function UseHiAndLowSinglePlay()
+{
+	ConfirmMessage("HI & LOW", "OK", function() {
+		var result = "";
+		for (i = 0; i < _place; ++i)
+		{
+			result += '<span class="card">';
+			if (_cpu_no[i] >= 5) result += "&uArr;";
+			else result += "&dArr;";
+			result += "</span>";
+		}
+		AddLogSinglePlay("HI&LOW", result);
+		ShowMesseage(result);
+	}, "Cancel", null);
+}
+
+// SLASH使用（一人で遊ぶ）
+function UseSlashSinglePlay()
+{
+	ConfirmMessage("SLASH", "OK", function() {
+		var max = 0;
+		var min = 9;
+		for (i = 0; i < _place; ++i)
+		{
+			if (max < _cpu_no[i]) max = _cpu_no[i];
+			if (min > _cpu_no[i]) min = _cpu_no[i];
+		}
+		var result = '<span class="card">' + (max - min) + "</span>";
+		AddLogSinglePlay("SLASH", result);
+		ShowMesseage(result);
+	}, "Cancel", null);
+}
+
+// カードをリセット（一人で遊ぶ）
+function ClearCardSinglePlay()
+{
+	var card = document.getElementById("single_card").getElementsByTagName("span");
+	for (var i = 0; i < _place; ++i)
+		card[i].innerHTML = "&nbsp;";
+	_call_no.length = 0;
+}
+
+// 経過時間更新（一人で遊ぶ）
+function CountUpTimerSinglePlay()
+{
+	var time = document.getElementById("single_time");
+	++time.timeCount;
+	var min = Math.floor(time.timeCount / 60);
+	var sec = time.timeCount % 60;
+	if (sec <= 9)
+		sec = "0" + sec;
+	time.innerHTML = "Time " + min + ":" + sec;
+}
+
+// ログを追加（一人で遊ぶ）
+function AddLogSinglePlay(number, result)
+{
+	var record = document.getElementById("single_record")
+
+	var element = document.createElement('div');
+	element.style.width = "20%";
+	element.appendChild(document.createTextNode(_turn));
+	record.appendChild(element);
+
+	element = document.createElement('div');
+	element.style.width = "40%";
+	element.appendChild(document.createTextNode(number));
+	record.appendChild(element);
+
+	element = document.createElement('div');
+	element.style.cssFloat = "none";
+	element.style.styleFloat = "none"; // 古いIE対応
+	element.innerHTML = result;
+	record.appendChild(element);
+
+	record.scrollTop = record.scrollHeight;
+	++_turn;
+}
+
+// ナンバーを比較しEAT数とBITE数を返す
+function CheckNumber(num1, num2)
+{
+	var eat = 0;
+	var bite = 0;
+	var comp = new Array(10);
+	var i;
+	for (i = 0; i < num1.length; ++i)
+		comp[num1[i]] = i;
+	for (i = 0; i < num2.length; ++i)
+	{
+		if (comp[num2[i]] != null)
+		{
+			if (comp[num2[i]] == i)
+				++eat;
+			else
+				++bite;
+		}
+	}
+	return eat + "-" + bite;
+}
+
+// メッセージ表示画面の作成
+// message		表示するメッセージ
+// time			表示時間(秒)。0だとクリックするまで無期限。
+// afterFunc	表示時間経過後、呼び出し関数。
+function ShowMesseage(message, afterFunc, time)
+{
+	if (time == undefined) time = 1;
+	var element = document.createElement('div');
+	element.id = "message";
+	element.onclick = function() { CloseMessage(afterFunc); };
+	element.innerHTML = "<div><p>" + message + "</p></div>";
+	document.getElementById("main").appendChild(element);
+	if (time)
+		_message_timer = window.setTimeout(function() { CloseMessage(afterFunc);}, time * 1000);
+	else
+		_message_timer = undefined;
+}
+
+// 二択メッセージの表示
+// message	表示するメッセージ
+// confirm1	選択肢1のテキスト
+// func1	選択肢1選択時の処理
+// confirm2	選択肢2のテキスト
+// func2	選択肢2選択時の処理
+function ConfirmMessage(message, confirm1, func1, confirm2, func2)
+{
+	var element = document.createElement('div');
+	element.id = "message";
+	var newDiv = document.createElement('div');
+	newDiv.innerHTML = "<p style=\"top:40%\">" + message + "</p>";
+	var newUl = document.createElement('ul');
+	var newLi = document.createElement('li');
+	newLi.onclick = function() { CloseMessage(func1); };
+	newLi.className = "button";
+	newLi.innerHTML = confirm1;
+	newUl.appendChild(newLi);
+	newLi = document.createElement('li');
+	newLi.onclick = function() { CloseMessage(func2); };
+	newLi.className = "button";
+	newLi.innerHTML = confirm2;
+	newUl.appendChild(newLi);
+	newDiv.appendChild(newUl);
+	element.appendChild(newDiv);
+	document.getElementById("main").appendChild(element);
+}
+
+// カード選択メッセージの表示
+// message	表示するメッセージ
+// input	選択するカードの配列
+// len		選択するカードの枚数
+function CardSelectMessage(message, input, len)
+{
+	var i;
+	_select_card.length = 0;
+
+	var element = document.createElement('div');
+	element.id = "message";
+	var inner = '<div style="top:130px; height : 220px"><p style="top:15%">'+ message + '</p><h1 id="select_card">';
+	for (i = 0; i < len; ++i)
+		inner += '<span class="card">&nbsp;</span>';
+	inner += '</h1><h2>';
+	for (i = 0; i < input.length; ++i)
+		inner += '<span class="card" id="select_' + input[i] + '">' + input[i] + '</span>';
+	inner += '</h2><ul><li class="button" style="width:70px" id="select_ok">OK</li><li class="button" style="width:70px" id="select_reset">RESET</li><li class="button" style="width:70px" id="select_cancel">CANCEL</li></ul></div>';
+	element.innerHTML = inner;
+
+/*
+	var newDiv = document.createElement('div');
+	newDiv.style.top = "130px";
+	newDiv.style.height = "220px";
+	newDiv.innerHTML = inner;
+
+	var newUl = document.createElement('ul');
+	var newLi = document.createElement('li');
+	newLi.onclick = function() { CloseMessage(null); };
+	newLi.className = "button";
+	newLi.innerHTML = "OK";
+	newUl.appendChild(newLi);
+	newLi = document.createElement('li');
+	newLi.onclick = function() { CloseMessage(null); };
+	newLi.className = "button";
+	newLi.innerHTML = "Cansel";
+	newUl.appendChild(newLi);
+	newDiv.appendChild(newUl);
+	element.appendChild(newDiv);
+*/
+
+	document.getElementById("main").appendChild(element);
+}
+
+function CloseMessage(afterFunc)
+{
+	if (_message_timer)
+	{
+		clearTimeout(_message_timer);
+		_message_timer = undefined;
+	}
+	var element = document.getElementById("message");
+	if (!element)
+		return;
+	if (afterFunc) afterFunc();
+	document.getElementById("main").removeChild(element);
+}
+
+// カード選択処理
+function PushSelectCard(num, target)
+{
+	var cards = document.getElementById("select_card").getElementsByTagName("span");
+	for (var i = 0; i < _select_card.length; ++i)
+		if (_select_card[i] == num) return;
+	if (_select_card.length < cards.length)
+	{
+		target.style.backgroundColor = "gray";
+		cards[_select_card.length].innerHTML = num;
+		_select_card.push(num);
+	}
+}
+
+//-->
+</script></HEAD>
+<body onload="InitSinglePlay(5);">
+<div class="main" id="main" align="center">
+  <div id="single_play" style="width : 100%;">
+    <div style="height : 50px;position : relative;"><span id="single_time" style="top : 19px;position : relative;left : 15px;float : left;">Time　0:00</span><span class="button" style="position : relative;top : 14px;float : right;left : -1em;border-radius : 5px ;padding : 3px 15px;border-width : thin;" onclick="alert('終了')">GiveUp</span></div>
+    <div style="height : 90px;">
+      <p id="single_card"><!--<span class="card">1</span><span class="card">2</span><span class="card">3</span><span class="card">4</span><span class="card">&nbsp;</span>--></p>
+    </div>
+    <div style="height : 220px;">
+      <table CELLSPACING="0" WIDTH="80%" HEIGHT="90%">
+        <tbody>
+          <tr>
+            <td class="button" id="num_0">0</td>
+            <td class="button" id="num_1">1</td>
+            <td class="button" id="num_2">2</td>
+          </tr>
+          <tr>
+            <td class="button" id="num_3">3</td>
+            <td class="button" id="num_4">4</td>
+            <td class="button" id="num_5">5</td>
+          </tr>
+          <tr>
+            <td class="button" id="num_6">6</td>
+            <td class="button" id="num_7">7</td>
+            <td class="button" id="num_8">8</td>
+          </tr>
+          <tr>
+            <td class="button" id="num_call" style="color : red;">CALL</td>
+            <td class="button" id="num_9">9</td>
+            <td class="button" id="num_reset"style="color : blue;">RESET</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="height : 15px;background-color : black;border-style : none;">
+            </td>
+          </tr>
+          <tr>
+            <td class="button" id="num_target">TRAGET</td>
+            <td class="button" id="num_hilow">HI&amp;LOW</td>
+            <td class="button" id="num_slash">SLASH</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="record_header"><div style="width : 20%;">TURN</div><div style="width : 40%;">NUMBER</div><div style="float : none;">RESULT</div></div>
+      <div class="record" id="single_record""><!--<div style="width : 20%;">1</div><div style="width : 40%;">123</div><div style="float : none;">1-1</div>--></div>
+    </div>
+  </div>
+
+  <!--<div id="message"><div><p>1-2</p></div></div>-->
+<!--<div id="message"><div><p style="top:40%">Numer0n!</p><ul><li class="button">test</li><li class="button">test2</li></ul></div></div>-->
+<!--<div id="message"><div style="top:130px; height : 220px">
+<p style="top:15%">Select Card</p>
+<h1><span class="card">0</span></h1>
+<h2><span class="card">0</span><span class="card">1</span><span class="card">2</span><span class="card">3</span><span class="card"">4</span><span class="card">5</span><span class="card">6</span><span class="card">7</span><span class="card">8</span><span class="card">9</span></h2>
+<ul><li class="button" style="width:70px">OK</li><li class="button" style="width:70px">RESET</li><li class="button" style="width:70px">CANCEL</li></ul>
+    </div></div>-->
+</div>
+</body>
+</HTML>
