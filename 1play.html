@@ -74,11 +74,11 @@ var _select_card = new Array();	/* 選択されたカード */
 function InitSinglePlay(place)
 {
 	var i;
-	_place = place;
+	_place = place || location.hash.substr(1,1) || 3;
 	_turn = 1;
 	_cpu_no.length = 0;
 	_call_no.length = 0;
-	while (_cpu_no.length < place)
+	while (_cpu_no.length < _place)
 	{
 		i = Math.floor( Math.random() * 10);
 		if (_cpu_no.toString().indexOf(i, 0) == -1)
@@ -102,7 +102,7 @@ function InitSinglePlay(place)
 	time.timeCount = 0;
 	time.innerHTML = "Time 0:00";
 
-//	alert(_cpu_no.join());
+	alert(_cpu_no.join());
 }
 
 // ボタン入力処理（一人で遊ぶ）
@@ -398,7 +398,7 @@ function PushSelectCard(num, target)
 
 //-->
 </script></HEAD>
-<body onload="InitSinglePlay(5);">
+<body onload="InitSinglePlay();">
 <div class="main" id="main" align="center">
   <div id="single_play" style="width : 100%;">
     <div style="height : 50px;position : relative;"><span id="single_time" style="top : 19px;position : relative;left : 15px;float : left;">Time　0:00</span><span class="button" style="position : relative;top : 14px;float : right;left : -1em;border-radius : 5px ;padding : 3px 15px;border-width : thin;" onclick="alert('終了')">GiveUp</span></div>
